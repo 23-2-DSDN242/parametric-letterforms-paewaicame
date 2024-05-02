@@ -92,8 +92,10 @@ var defaultSwapWords = [
 const interpolation_is_on = (typeof interpolate_letter === "function");
 
 let paperOverlayImage;
+let bookOverlayImage;
 function preload() {
     paperOverlayImage = loadImage('paperoverlay.webp');
+    bookOverlayImage = loadImage('bookoverlay.webp');
 }
 
 function setup() {
@@ -201,6 +203,9 @@ function computeCurrentChosenChar(n) {
 
 function draw() {
     now = millis();
+    rotate(-5);
+    scale(0.9);
+    translate(40,80);
     // check to see if we should go into swapping mode
     if (!isSwappingWords && lastKeyPressedTime + 1000 * secondsUntilSwapMode < now) {
         isSwappingWords = true;
@@ -233,15 +238,27 @@ function draw() {
             chosenCurAnimationFrame[i] = chosenCurAnimationFrame[i] + 1;
         }
         var obj = computeCurrentChosenChar(i);
-        drawFromDataObject(o + i * w2 / 8.0, o + h2 / 2.0 - 120, 1.0, obj);
-    }
 
+        // spaces the letters nicer on both pages
+        let pageOffset = 30;
+        if (i <= 3) {
+            pageOffset = -pageOffset;
+        }
+        drawFromDataObject(o + i * w2 / 8.0 + pageOffset, o + h2 / 2.0 - 120, 1.0, obj);
+    }
 
     // extra effects for a paper texture effect
     push();
     filter(BLUR,1.5);
     blendMode(OVERLAY);
     image(paperOverlayImage,0,0);
+    pop();
+
+    // book overlay
+    push();
+    scale(1.1);
+    rotate(1);
+    image(bookOverlayImage,-270,-75); // image by jannoon028 on Freepik
     pop();
 }
 
